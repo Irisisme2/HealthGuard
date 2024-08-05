@@ -22,6 +22,7 @@
 1. **Real-time Health Monitoring** ⏱️
    The application integrates with IoT devices such as smartwatches and fitness bands to collect biometric data from the user, including heart rate, stress levels, sleep quality, and physical activity. Data is analyzed in real-time and presented in clear charts and reports. 📈📊  
    - **Impact**: Includes accessibility features adhering to WCAG guidelines, such as screen reader support, keyboard navigation, and customizable contrast and font size options. 🧑‍🦯🔠
+![IotDashboard](src/assets/img/Viewimg/dashboard1.png)
 
 2. **Artificial Intelligence for Health Analysis** 🧠
    TensorFlow.js is used for analyzing biometric data. AI models predict potential health issues and provide personalized recommendations on diet, exercise, and other health aspects. 🥗🏋️‍♂️  

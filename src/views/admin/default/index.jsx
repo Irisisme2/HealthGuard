@@ -39,19 +39,13 @@ import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
 import React from "react";
 import { MdLocalHospital, MdThermostat, MdMedicalServices, MdFavorite, MdFitnessCenter, MdMonitorHeart } from 'react-icons/md';
-import CheckTable from "views/admin/default/components/CheckTable";
-import ComplexTable from "views/admin/default/components/ComplexTable";
-import DailyTraffic from "views/admin/default/components/DailyTraffic";
-import PieCard from "views/admin/default/components/PieCard";
-import Tasks from "views/admin/default/components/Tasks";
-import TotalSpent from "views/admin/default/components/TotalSpent";
-import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
-import {
-  columnsDataCheck,
-  columnsDataComplex,
-} from "views/admin/default/variables/columnsData";
-import tableDataCheck from "views/admin/default/variables/tableDataCheck.json";
-import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
+import UpcomingAppointmentsCard from "views/admin/default/components/UpcomingAppointmentsCard";
+import HealthJournal from "views/admin/default/components/HealthJournal";
+import MedicationManagement from "views/admin/default/components/MedicationManagement";
+import AppointmentForm from "views/admin/default/components/AppointmentForm";
+import HealthChallenges from "views/admin/default/components/HealthChallenges";
+import HeartRate from "views/admin/default/components/HeartRate";
+import BloodPressureStatsCard from "views/admin/default/components/BloodPressureStatsCard";
 
 export default function UserReports() {
   // Chakra Color Mode
@@ -148,27 +142,24 @@ export default function UserReports() {
           value='190 mg/dL'
         />
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        <TotalSpent />
-        <WeeklyRevenue />
+    <SimpleGrid columns={{ base: 1, md: 2 }} gap='20px' mb='20px'>
+        <HeartRate />
+        <BloodPressureStatsCard />
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
-        <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          <DailyTraffic />
-          <PieCard />
-        </SimpleGrid>
+
+      <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px' mb='20px'>
+        <UpcomingAppointmentsCard />
+
+        <Box>
+          <MedicationManagement />
+          <Box mt='20px'>
+            <HealthChallenges />
+          </Box>
+        </Box>
+
+        <AppointmentForm />
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
-        <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          <Tasks />
-          <MiniCalendar h='100%' minW='100%' selectRange={false} />
-        </SimpleGrid>
-      </SimpleGrid>
+        <HealthJournal />
     </Box>
   );
 }
