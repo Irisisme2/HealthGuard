@@ -1,67 +1,139 @@
-// Chakra imports
-import { Avatar, Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
-import Card from "components/card/Card.js";
-import React from "react";
+import React, { useState } from 'react';
+import { Box, Heading, Text, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
+import { Line } from 'react-chartjs-2';
+import Card from 'components/card/Card'; // Adjust import according to your setup
+import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
-export default function Banner(props) {
-  const { banner, avatar, name, job, posts, followers, following } = props;
-  // Chakra Color Mode
-  const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
-  const textColorSecondary = "gray.400";
-  const borderColor = useColorModeValue(
-    "white !important",
-    "#111C44 !important"
-  );
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
+
+// Sample heart rate data for today and the week
+const dataToday = {
+  labels: ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM'],
+  datasets: [
+    {
+      label: 'Heart Rate (bpm)',
+      data: [72, 74, 76, 78, 77, 79, 80, 82, 81],
+      fill: false,
+      borderColor: '#4FD1C5',
+      tension: 0.1,
+    },
+  ],
+};
+
+const dataWeek = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  datasets: [
+    {
+      label: 'Heart Rate (bpm)',
+      data: [72, 75, 78, 73, 80, 85, 79],
+      fill: false,
+      borderColor: '#4FD1C5',
+      tension: 0.1,
+    },
+  ],
+};
+
+const HeartRateChart = () => {
+  const [selectedTab, setSelectedTab] = useState('today');
+
+  // Determine which data to show based on selected tab
+  const chartData = selectedTab === 'today' ? dataToday : dataWeek;
+
   return (
-    <Card mb={{ base: "0px", lg: "20px" }} align='center'>
-      <Box
-        bg={`url(${banner})`}
-        bgSize='cover'
-        borderRadius='16px'
-        h='131px'
-        w='100%'
-      />
-      <Avatar
-        mx='auto'
-        src={avatar}
-        h='87px'
-        w='87px'
-        mt='-43px'
-        border='4px solid'
-        borderColor={borderColor}
-      />
-      <Text color={textColorPrimary} fontWeight='bold' fontSize='xl' mt='10px'>
-        {name}
+    <Card p={6} borderRadius="lg" shadow="lg" bg="white" maxW="700px" mx="auto">
+      <Heading mb={4} fontSize="2xl" fontWeight="bold" textAlign="center">
+        Heart Rate
+      </Heading>
+      <Text mb={4} textAlign="center" fontSize="md" color="gray.600">
+        View your heart rate data for the selected time period.
       </Text>
-      <Text color={textColorSecondary} fontSize='sm'>
-        {job}
-      </Text>
-      <Flex w='max-content' mx='auto' mt='26px'>
-        <Flex mx='auto' me='60px' align='center' direction='column'>
-          <Text color={textColorPrimary} fontSize='2xl' fontWeight='700'>
-            {posts}
-          </Text>
-          <Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-            Posts
-          </Text>
-        </Flex>
-        <Flex mx='auto' me='60px' align='center' direction='column'>
-          <Text color={textColorPrimary} fontSize='2xl' fontWeight='700'>
-            {followers}
-          </Text>
-          <Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-            Followers
-          </Text>
-        </Flex>
-        <Flex mx='auto' align='center' direction='column'>
-          <Text color={textColorPrimary} fontSize='2xl' fontWeight='700'>
-            {following}
-          </Text>
-          <Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-            Following
-          </Text>
-        </Flex>
-      </Flex>
+      <Tabs isLazy variant="enclosed" colorScheme="teal" mb={6} onChange={(index) => setSelectedTab(index === 0 ? 'today' : 'week')}>
+        <TabList>
+          <Tab>Today</Tab>
+          <Tab>Over the Week</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <Box>
+              <Line
+                data={chartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (tooltipItem) {
+                          return `${tooltipItem.dataset.label}: ${tooltipItem.raw} bpm`;
+                        },
+                      },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: selectedTab === 'today' ? 'Hour of Day' : 'Day',
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: 'Heart Rate (bpm)',
+                      },
+                      min: 60,
+                      max: 100,
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </TabPanel>
+          <TabPanel>
+            <Box>
+              <Line
+                data={chartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (tooltipItem) {
+                          return `${tooltipItem.dataset.label}: ${tooltipItem.raw} bpm`;
+                        },
+                      },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: selectedTab === 'today' ? 'Hour of Day' : 'Day',
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: 'Heart Rate (bpm)',
+                      },
+                      min: 60,
+                      max: 100,
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Card>
   );
-}
+};
+
+export default HeartRateChart;

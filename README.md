@@ -55,6 +55,7 @@
 9. **Health Facility Map** 🗺️
    Utilizes Google Maps API to locate nearby health facilities. Users can view ratings and compare medical service offers in different countries. 🌍  
    - **Usefulness**: Enhances user experience by providing comprehensive information on health facilities. 🏨
+![Facilitymap](src/assets/img/Viewimg/facilitymap.png)
 
 10. **Medical Offer Comparison** 🔍
     Compares medical offers in various countries, including cost and service availability. 💵🌐  
