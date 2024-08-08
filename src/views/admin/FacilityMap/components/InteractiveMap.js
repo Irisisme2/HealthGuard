@@ -8,8 +8,8 @@ import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'; // Import ico
 const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const containerStyle = {
-  width: '100%',
-  height: '130%'
+  width: '150%',
+  height: '155%'
 };
 
 const defaultCenter = {

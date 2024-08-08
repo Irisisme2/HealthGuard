@@ -51,6 +51,8 @@
 8. **Scheduling Doctor Appointments** 🩺
    Allows users to schedule in-person and online doctor appointments directly from the app, with reminders for upcoming visits. 📅🕒  
    - **Impact**: Simplifies the appointment scheduling process, improving access to healthcare services. 🏥
+![appointments](src/assets/img/Viewimg/appointments.png)
+![appointments](src/assets/img/Viewimg/appointments2.png)
 
 9. **Health Facility Map** 🗺️
    Utilizes Google Maps API to locate nearby health facilities. Users can view ratings and compare medical service offers in different countries. 🌍  
