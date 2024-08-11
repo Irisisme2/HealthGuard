@@ -12,12 +12,11 @@ import {
   Text,
   VStack,
   HStack,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 
 const AiAssistant = () => {
   const [query, setQuery] = useState('');
-  const [response, setResponse] = useState('');
+  const [conversation, setConversation] = useState([]);
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
@@ -25,21 +24,29 @@ const AiAssistant = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Update conversation with user query
+    const userQuery = { role: 'user', text: query };
+    setConversation([...conversation, userQuery]);
+
     try {
       const res = await axios.post(
-        'https://api.endpoint.com/gemini',
+        'http://localhost:3001/api/ask',
         { query },
         {
           headers: {
-            'Authorization': `Bearer ${process.env.REACT_APP_GEMINI_API_KEY}`,
             'Content-Type': 'application/json',
           },
         }
       );
-      setResponse(res.data.answer);
+
+      // Update conversation with model response
+      const modelResponse = { role: 'model', text: res.data.answer };
+      setConversation([...conversation, userQuery, modelResponse]);
+      setQuery(''); // Clear the input field
     } catch (error) {
       console.error("Error fetching AI response:", error);
-      setResponse("Sorry, there was an error.");
+      setConversation([...conversation, userQuery, { role: 'model', text: "Sorry, there was an error." }]);
     }
   };
 
@@ -93,16 +100,23 @@ const AiAssistant = () => {
                 p={4}
                 display="flex"
                 flexDirection="column"
+                overflowY="auto"
               >
                 <Stack spacing={4}>
-                  {response && (
-                    <Box bg="gray.100" p={4} borderRadius="md" shadow="sm">
+                  {conversation.map((msg, index) => (
+                    <Box
+                      key={index}
+                      bg={msg.role === 'user' ? 'blue.100' : 'green.100'}
+                      p={4}
+                      borderRadius="md"
+                      shadow="sm"
+                    >
                       <Text fontSize="lg" fontWeight="medium">
-                        Response:
+                        {msg.role === 'user' ? 'You:' : 'AI:'}
                       </Text>
-                      <Text mt={2}>{response}</Text>
+                      <Text mt={2}>{msg.text}</Text>
                     </Box>
-                  )}
+                  ))}
                 </Stack>
               </Box>
               <HStack as="form" spacing={4} onSubmit={handleSubmit} mt={4}>
@@ -128,4 +142,3 @@ const AiAssistant = () => {
 };
 
 export default AiAssistant;
-
