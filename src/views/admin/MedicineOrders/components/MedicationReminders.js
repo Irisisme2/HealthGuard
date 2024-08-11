@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -28,7 +28,7 @@ import {
   Flex,
   IconButton,
   Image,
-  Collapse
+  Collapse,
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon, AddIcon, InfoIcon, SunIcon, MoonIcon } from "@chakra-ui/icons";
 import Card from "components/card/Card.js";
@@ -43,13 +43,11 @@ import pill6 from 'assets/img/pill/pill6.png';
 const exampleMedications = [
   { name: "Aspirin", image: pill1 },
   { name: "Lisinopril", image: pill2 },
-  // Add more example medications as needed
 ];
 
 const exampleReminders = [
-  { medication: "Aspirin", time: "08:00 AM", type: "App Notification", status: "Active", notes: "Take with food.", id: 1 },
-  { medication: "Lisinopril", time: "08:00 AM", type: "Email", status: "Active", notes: "Avoid potassium-rich foods.", id: 2 },
-  // Add more example reminders as needed
+  { medication: "Aspirin", time: "08:00", type: "App Notification", status: "Active", notes: "Take with food.", id: 1 },
+  { medication: "Lisinopril", time: "08:00", type: "Email", status: "Active", notes: "Avoid potassium-rich foods.", id: 2 },
 ];
 
 const ReminderCard = ({ reminder, onEdit, onDelete, onToggleStatus }) => {
@@ -66,16 +64,16 @@ const ReminderCard = ({ reminder, onEdit, onDelete, onToggleStatus }) => {
       position="relative"
       _hover={{ shadow: "lg", cursor: "pointer" }}
     >
-      <Flex align="center">
+      <Flex direction={{ base: "column", md: "row" }} align="center">
         <Image boxSize="60px" src={exampleMedications.find(med => med.name === medication)?.image || pill1} alt={medication} borderRadius="full" />
-        <VStack align="start" ml={4} spacing={2} flex="1">
+        <VStack align="start" ml={{ base: 0, md: 4 }} spacing={2} flex="1" mt={{ base: 4, md: 0 }}>
           <Text fontWeight="bold" fontSize="lg">{medication}</Text>
           <Text fontSize="md">Time: {time}</Text>
           <Text fontSize="md">Type: {type}</Text>
           <Text fontSize="md">Status: {status}</Text>
           <Text fontSize="sm" noOfLines={2}>{notes}</Text>
         </VStack>
-        <HStack spacing={2} ml={4}>
+        <VStack spacing={2} ml={{ base: 0, md: 4 }} align="end" mt={{ base: 4, md: 0 }}>
           <IconButton
             icon={<InfoIcon />}
             aria-label="View details"
@@ -102,7 +100,7 @@ const ReminderCard = ({ reminder, onEdit, onDelete, onToggleStatus }) => {
           >
             {status === "Active" ? "Mark Completed" : "Mark Active"}
           </Button>
-        </HStack>
+        </VStack>
       </Flex>
     </GridItem>
   );
@@ -120,7 +118,6 @@ const MedicationReminders = () => {
     recurrenceInterval: "daily",
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedReminder, setSelectedReminder] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [showHistory, setShowHistory] = useState(false);
@@ -130,13 +127,29 @@ const MedicationReminders = () => {
 
   const toast = useToast();
 
-  // Filter reminders based on search and status
-  const filteredReminders = reminders
-    .filter(rem =>
-      (selectedStatus === "All" || rem.status === selectedStatus) &&
-      (rem.medication.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       rem.notes.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+  useEffect(() => {
+    const checkReminders = () => {
+      const now = new Date();
+      const currentTime = now.toTimeString().substr(0, 5);
+      reminders.forEach(rem => {
+        if (rem.time === currentTime && rem.status === "Active") {
+          const audio = new Audio('assets/sounds/sound.wav');
+          audio.play();
+          toast({
+            title: "Reminder Alert!",
+            description: `It's time to take your ${rem.medication}.`,
+            status: "info",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      });
+    };
+
+    const intervalId = setInterval(checkReminders, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [reminders, toast]);
 
   const handleAddOrEditReminder = () => {
     if (isEditing) {
@@ -187,6 +200,13 @@ const MedicationReminders = () => {
       isClosable: true,
     });
   };
+
+  // Filter reminders based on search query and selected status
+  const filteredReminders = reminders.filter(reminder => {
+    const matchesSearchQuery = reminder.medication.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = selectedStatus === "All" || reminder.status === selectedStatus;
+    return matchesSearchQuery && matchesStatus;
+  });
 
   return (
     <Card>

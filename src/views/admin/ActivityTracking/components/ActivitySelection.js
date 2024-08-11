@@ -14,12 +14,12 @@ import swimming from 'assets/img/activities/swimming.png';
 import hiking from 'assets/img/activities/hiking.png';
 import gym from 'assets/img/activities/gym.png';
 import dancing from 'assets/img/activities/dancing.png';
-import jogging from 'assets/img/activities/jogging.png';  // Dodany obrazek
-import pilates from 'assets/img/activities/pilates.png';  // Dodany obrazek
-import tennis from 'assets/img/activities/tennis.png';    // Dodany obrazek
-import rollerblading from 'assets/img/activities/rollerblading.png'; // Dodany obrazek
-import climbing from 'assets/img/activities/climbing.png'; // Dodany obrazek
-import yoga from 'assets/img/activities/yoga.png'; // Dodany obrazek
+import jogging from 'assets/img/activities/jogging.png'; 
+import pilates from 'assets/img/activities/pilates.png'; 
+import tennis from 'assets/img/activities/tennis.png';   
+import rollerblading from 'assets/img/activities/rollerblading.png'; 
+import climbing from 'assets/img/activities/climbing.png'; 
+import yoga from 'assets/img/activities/yoga.png'; 
 import AddActivityForm from './AddActivityForm';
 
 const activities = [
@@ -29,12 +29,12 @@ const activities = [
   { name: 'Hiking', img: hiking, value: 'hiking' },
   { name: 'Gym', img: gym, value: 'gym' },
   { name: 'Dancing', img: dancing, value: 'dancing' },
-  { name: 'Jogging', img: jogging, value: 'jogging' }, // Nowa aktywność
-  { name: 'Pilates', img: pilates, value: 'pilates' }, // Nowa aktywność
-  { name: 'Tennis', img: tennis, value: 'tennis' }, // Nowa aktywność
-  { name: 'Rollerblading', img: rollerblading, value: 'rollerblading' }, // Nowa aktywność
-  { name: 'Climbing', img: climbing, value: 'climbing' }, // Nowa aktywność
-  { name: 'Yoga', img: yoga, value: 'yoga' }, // Nowa aktywność
+  { name: 'Jogging', img: jogging, value: 'jogging' }, 
+  { name: 'Pilates', img: pilates, value: 'pilates' }, 
+  { name: 'Tennis', img: tennis, value: 'tennis' }, 
+  { name: 'Rollerblading', img: rollerblading, value: 'rollerblading' }, 
+  { name: 'Climbing', img: climbing, value: 'climbing' }, 
+  { name: 'Yoga', img: yoga, value: 'yoga' },
 ];
 
 const ActivitySelection = () => {
@@ -68,7 +68,7 @@ const ActivitySelection = () => {
             Select an activity type to log your physical activity.
           </Text>
 
-          <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
+          <Grid templateColumns="repeat(auto-fit, minmax(140px, 1fr))" gap={4}>
             {activities.map((activity) => (
               <Box
                 key={activity.value}

@@ -25,11 +25,10 @@ import { Box, Grid } from "@chakra-ui/react";
 
 // Custom components
 import Banner from "views/admin/profile/components/Banner";
-import General from "views/admin/profile/components/General";
+import Subscriptions from "views/admin/profile/components/Subscriptions";
 import Notifications from "views/admin/profile/components/Notifications";
-import Projects from "views/admin/profile/components/Projects";
-import Storage from "views/admin/profile/components/Storage";
-import Upload from "views/admin/profile/components/Upload";
+import PrivacySettings from "views/admin/profile/components/PrivacySettings";
+import Tests from "views/admin/profile/components/Tests";
 
 // Assets
 import banner from "assets/img/auth/banner.png";
@@ -55,17 +54,16 @@ export default function Overview() {
           banner={banner}
           avatar={avatar}
           name='Adela Parkson'
-          job='Product Designer'
-          posts='17'
-          followers='9.7k'
-          following='274'
+          posts='27'
+          followers='$9.7k'
+          following='54kg'
         />
-        <Storage
+        <PrivacySettings
           gridArea={{ base: "2 / 1 / 3 / 2", lg: "1 / 2 / 2 / 3" }}
           used={25.6}
           total={50}
         />
-        <Upload
+        <Tests
           gridArea={{
             base: "3 / 1 / 4 / 2",
             lg: "1 / 3 / 2 / 4",
@@ -88,17 +86,7 @@ export default function Overview() {
           "2xl": "1fr",
         }}
         gap={{ base: "20px", xl: "20px" }}>
-        <Projects
-          gridArea='1 / 2 / 2 / 2'
-          banner={banner}
-          avatar={avatar}
-          name='Adela Parkson'
-          job='Product Designer'
-          posts='17'
-          followers='9.7k'
-          following='274'
-        />
-        <General
+        <Subscriptions
           gridArea={{ base: "2 / 1 / 3 / 2", lg: "1 / 2 / 2 / 3" }}
           minH='365px'
           pe='20px'
