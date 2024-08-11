@@ -1,5 +1,23 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Box, Heading, Text, Input, Stack, Spinner, Button, List, ListItem, IconButton, Collapse, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Text,
+  Input,
+  Stack,
+  Spinner,
+  Button,
+  List,
+  ListItem,
+  IconButton,
+  Collapse,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody
+} from '@chakra-ui/react';
 import { GoogleMap, LoadScript, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api';
 import axios from 'axios';
 import Card from 'components/card/Card'; // Adjust import according to your setup
@@ -8,8 +26,8 @@ import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'; // Import ico
 const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const containerStyle = {
-  width: '150%',
-  height: '155%'
+  width: '100%',
+  height: '100%'
 };
 
 const defaultCenter = {
@@ -36,9 +54,17 @@ const InteractiveMap = () => {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.lat},${center.lng}&radius=5000&type=hospital&key=${apiKey}`
       );
-      setLocations(response.data.results);
+      const places = response.data.results;
+
+      // Fetch detailed info for each place
+      const detailsPromises = places.map(place => 
+        axios.get(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${apiKey}`)
+      );
+      const detailsResponses = await Promise.all(detailsPromises);
+      const detailedPlaces = detailsResponses.map(resp => resp.data.result);
+      setLocations(detailedPlaces);
     } catch (error) {
-      console.error('Error fetching locations:', error);
+      console.error('Error fetching locations:', error.response ? error.response.data : error.message);
     }
     setLoading(false);
   }, []);
@@ -68,20 +94,17 @@ const InteractiveMap = () => {
               position: place.geometry.location
             });
 
-            const infoWindow = new google.maps.InfoWindow({
-              content: `<div><strong>${place.name}</strong><br>${place.vicinity}<br><button id="details-btn-${place.place_id}" onclick="showDetails('${place.place_id}')">Details</button></div>`,
-              position: place.geometry.location // Make sure the InfoWindow has a position
-            });
-
             marker.addListener('click', () => {
-              infoWindow.open(map, marker);
-              setSelectedLocation(place);
+              setSelectedLocation({
+                ...place,
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+              });
             });
 
             updatedLocations.push({
               ...place,
-              marker,
-              infoWindow
+              marker
             });
           });
           setLocations(updatedLocations);
@@ -91,14 +114,6 @@ const InteractiveMap = () => {
       });
     }
   }, [googleLoaded, mapCenter]);
-
-  const handleMarkerClick = (location) => {
-    setSelectedLocation(location);
-  };
-
-  const handleCloseClick = () => {
-    setSelectedLocation(null);
-  };
 
   const handlePlaceChanged = () => {
     if (autocompleteRef.current) {
@@ -110,20 +125,30 @@ const InteractiveMap = () => {
         };
         setMapCenter(newCenter);
         fetchLocations(newCenter);
+      } else {
+        console.error('No geometry found for the selected place.');
       }
     }
   };
 
   const handleListItemClick = (location) => {
-    setMapCenter({
-      lat: location.geometry.location.lat,
-      lng: location.geometry.location.lng
-    });
-    setSelectedLocation(location);
+    try {
+      setMapCenter({
+        lat: location.geometry.location.lat,
+        lng: location.geometry.location.lng
+      });
+      setSelectedLocation(location);
+    } catch (error) {
+      console.error('Error handling list item click:', error);
+    }
   };
 
   const handleViewDetails = (location) => {
-    setDetailsLocation(location);
+    try {
+      setDetailsLocation(location);
+    } catch (error) {
+      console.error('Error viewing details:', error);
+    }
   };
 
   return (
@@ -157,13 +182,16 @@ const InteractiveMap = () => {
           Search Hospitals
         </Button>
       </Stack>
-      <Stack direction="row" spacing={4} height="500px">
+      <Stack direction="row" spacing={4} height="680px">
         <Box
-          width={isListOpen ? "40%" : "0%"}
+          width={isListOpen ? "35%" : "0%"}
           height="100%"
           overflowY="auto"
           transition="width 0.3s"
           position="relative"
+          borderWidth="1px"
+          borderColor="gray.200"
+          bg="gray.50"
         >
           <Collapse in={isListOpen}>
             <Box p={2}>
@@ -182,6 +210,7 @@ const InteractiveMap = () => {
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"
+                      onClick={() => handleListItemClick(location)}
                     >
                       <Box>
                         <Heading fontSize="md">{location.name}</Heading>
@@ -201,7 +230,7 @@ const InteractiveMap = () => {
             </Box>
           </Collapse>
         </Box>
-        <Box width={isListOpen ? "60%" : "100%"} height="100%" position="relative">
+        <Box width={isListOpen ? "65%" : "100%"} height="100%" position="relative">
           {googleLoaded && (
             <GoogleMap
               mapContainerStyle={containerStyle}
@@ -213,19 +242,23 @@ const InteractiveMap = () => {
                 <Marker
                   key={location.place_id}
                   position={{
-                    lat: location.geometry.location.lat,
-                    lng: location.geometry.location.lng,
+                    lat: location.geometry.location.lat(),
+                    lng: location.geometry.location.lng(),
                   }}
-                  onClick={() => handleMarkerClick(location)}
+                  onClick={() => setSelectedLocation({
+                    ...location,
+                    lat: location.geometry.location.lat(),
+                    lng: location.geometry.location.lng()
+                  })}
                 />
               ))}
               {selectedLocation && (
                 <InfoWindow
                   position={{
-                    lat: selectedLocation.geometry.location.lat,
-                    lng: selectedLocation.geometry.location.lng,
+                    lat: selectedLocation.lat,
+                    lng: selectedLocation.lng,
                   }}
-                  onCloseClick={handleCloseClick}
+                  onCloseClick={() => setSelectedLocation(null)}
                 >
                   <Box>
                     <Heading fontSize="lg">{selectedLocation.name}</Heading>
@@ -266,7 +299,7 @@ const InteractiveMap = () => {
             <Text><strong>Address:</strong> {detailsLocation?.vicinity || detailsLocation?.formatted_address}</Text>
             <Text><strong>Phone:</strong> {detailsLocation?.formatted_phone_number || 'N/A'}</Text>
             <Text><strong>Opening Hours:</strong> {detailsLocation?.opening_hours?.weekday_text?.join(', ') || 'N/A'}</Text>
-            {/* Add more details if available */}
+            <Text><strong>Google Maps Link:</strong> <a href={`https://www.google.com/maps/place/?q=place_id:${detailsLocation?.place_id}`} target="_blank" rel="noopener noreferrer">View on Google Maps</a></Text>
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -275,3 +308,4 @@ const InteractiveMap = () => {
 };
 
 export default InteractiveMap;
+

@@ -9,8 +9,8 @@ export default function Overview() {
       width="100vw"
       height="100vh"
       overflow="hidden"
-      maxW="1500px" // Optional: Set a max-width if needed
-      mx="auto" // Center the container horizontally
+      maxW="1500px" 
+      mx="auto" 
     >
       <Grid
         templateColumns="1fr"

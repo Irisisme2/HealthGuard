@@ -99,6 +99,13 @@ const routes = [
     icon: <Icon as={MdAccountCircle} width='20px' height='20px' color='inherit' />,
     component: profile,
   },
+  {
+    name: "Signin",
+    layout: "/admin",
+    path: "/SignInCentered",
+    icon: <Icon as={MdAccountCircle} width='20px' height='20px' color='inherit' />,
+    component: SignInCentered,
+  },
 ];
 
 export default routes;
