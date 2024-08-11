@@ -25,7 +25,6 @@ const AiAssistant = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Update conversation with user query
     const userQuery = { role: 'user', text: query };
     setConversation([...conversation, userQuery]);
 
@@ -40,10 +39,9 @@ const AiAssistant = () => {
         }
       );
 
-      // Update conversation with model response
       const modelResponse = { role: 'model', text: res.data.answer };
       setConversation([...conversation, userQuery, modelResponse]);
-      setQuery(''); // Clear the input field
+      setQuery(''); 
     } catch (error) {
       console.error("Error fetching AI response:", error);
       setConversation([...conversation, userQuery, { role: 'model', text: "Sorry, there was an error." }]);

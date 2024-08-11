@@ -24,12 +24,11 @@ import {
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import 'moment/locale/en-gb'; // Change to English locale if needed
+import 'moment/locale/en-gb'; 
 import { AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import Card from 'components/card/Card';
-import { fetchHospitals } from 'services/googleMapsService'; // Import the service
+import { fetchHospitals } from 'services/googleMapsService'; 
 
-// Configure moment locale
 moment.locale('en-gb');
 const localizer = momentLocalizer(moment);
 
@@ -37,7 +36,7 @@ const initialEvents = [
   {
     id: 1,
     title: 'Doctor Checkup',
-    start: new Date(2024, 7, 10, 10, 0), // Date(year, month, day, hour, minute)
+    start: new Date(2024, 7, 10, 10, 0),
     end: new Date(2024, 7, 10, 11, 0),
     desc: 'Appointment with Dr. John Smith at Clinic A',
     type: 'checkup',
@@ -194,7 +193,7 @@ const CalendarView = () => {
 
   const generateRecurringEvents = (event) => {
     const recurringEvents = [];
-    const interval = 7; // Weekly recurrence
+    const interval = 7; 
     for (let i = 1; i <= 10; i++) {
       const start = moment(event.start).add(i * interval, 'days').toDate();
       const end = moment(event.end).add(i * interval, 'days').toDate();
@@ -240,7 +239,7 @@ const CalendarView = () => {
 
   const handleSelectEvent = event => {
     setSelectedEvent(event);
-    onOpen(); // Open details modal
+    onOpen(); 
   };
 
   const handleEditButtonClick = event => {
