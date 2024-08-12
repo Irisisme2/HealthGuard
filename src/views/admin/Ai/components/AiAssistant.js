@@ -13,6 +13,7 @@ import {
   VStack,
   HStack,
 } from '@chakra-ui/react';
+import ReactMarkdown from 'react-markdown'; // Do renderowania Markdown
 
 const AiAssistant = () => {
   const [query, setQuery] = useState('');
@@ -112,7 +113,14 @@ const AiAssistant = () => {
                       <Text fontSize="lg" fontWeight="medium">
                         {msg.role === 'user' ? 'You:' : 'AI:'}
                       </Text>
-                      <Text mt={2}>{msg.text}</Text>
+                      <Box mt={2}>
+                        {/* Renderowanie Markdown lub HTML */}
+                        {msg.role === 'model' ? (
+                          <ReactMarkdown>{msg.text}</ReactMarkdown> // Renderowanie Markdown
+                        ) : (
+                          <Text>{msg.text}</Text>
+                        )}
+                      </Box>
                     </Box>
                   ))}
                 </Stack>

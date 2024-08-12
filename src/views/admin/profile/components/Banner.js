@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Box,
@@ -14,32 +14,27 @@ import {
 import Card from 'components/card/Card.js';
 import { EditIcon } from '@chakra-ui/icons';
 
-export default function PersonalInfoCard(props) {
-  // Initial personal info data
-  const {
-    banner: initialBanner,
-    avatar: initialAvatar,
-    name: initialName,
-    birthDate: initialBirthDate,
-    gender: initialGender,
-    email: initialEmail,
-    phone: initialPhone,
-    address: initialAddress,
-  } = props;
+export default function PersonalInfoCard() {
+  const [avatarSrc, setAvatarSrc] = useState('');
+  const [bannerSrc, setBannerSrc] = useState('');
+  const [name, setName] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [gender, setGender] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
 
-  const [avatarSrc, setAvatarSrc] = useState(initialAvatar);
-  const [bannerSrc, setBannerSrc] = useState(initialBanner);
-  const [name, setName] = useState(initialName);
-  const [birthDate, setBirthDate] = useState(initialBirthDate);
-  const [gender, setGender] = useState(initialGender);
-  const [email, setEmail] = useState(initialEmail);
-  const [phone, setPhone] = useState(initialPhone);
-  const [address, setAddress] = useState(initialAddress);
-
-  // State for editing mode
   const [isEditing, setIsEditing] = useState(false);
 
-  // Chakra Color Mode
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData) {
+      setName(userData.name || '');
+      setEmail(userData.email || '');
+      setAvatarSrc(userData.profilePic || '');
+    }
+  }, []);
+
   const textColorPrimary = useColorModeValue('secondaryGray.900', 'white');
   const textColorSecondary = 'gray.400';
   const borderColor = useColorModeValue(
@@ -70,7 +65,6 @@ export default function PersonalInfoCard(props) {
   };
 
   const handleSave = () => {
-    // Save functionality (e.g., send data to the server) can be implemented here
     setIsEditing(false);
   };
 
@@ -79,12 +73,6 @@ export default function PersonalInfoCard(props) {
   };
 
   const handleCancel = () => {
-    setName(initialName);
-    setBirthDate(initialBirthDate);
-    setGender(initialGender);
-    setEmail(initialEmail);
-    setPhone(initialPhone);
-    setAddress(initialAddress);
     setIsEditing(false);
   };
 

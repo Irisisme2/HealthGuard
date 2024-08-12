@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom"; // Import useHistory for React Router v5
+import { NavLink, useHistory } from "react-router-dom";
 import { Icon, Card } from "@chakra-ui/react";
 import {
   Box,
@@ -25,7 +25,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignIn() {
-  const history = useHistory(); // Use useHistory for navigation
+  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,7 +37,7 @@ function SignIn() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      history.push("/dashboard"); // Use history.push for navigation
+      history.push("/dashboard");
     } catch (error) {
       setError(error.message);
     }
@@ -46,14 +46,21 @@ function SignIn() {
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      history.push("/dashboard"); // Use history.push for navigation
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userData = {
+        name: user.displayName,
+        email: user.email,
+        profilePic: user.photoURL,
+      };
+      // Store user data in local storage or global state
+      localStorage.setItem("user", JSON.stringify(userData));
+      history.push("/dashboard");
     } catch (error) {
       setError(error.message);
     }
   };
 
-  // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
@@ -79,12 +86,12 @@ function SignIn() {
       <Card
         w="550px"
         mx="auto"
-        h="800px" 
-        alignItems="center" 
-        justifyContent="center" 
+        h="800px"
+        alignItems="center"
+        justifyContent="center"
         mt="-40px"
         px="25px"
-        py="40px" 
+        py="40px"
         flexDirection="column"
       >
         <Box mb="20px" textAlign="center">
